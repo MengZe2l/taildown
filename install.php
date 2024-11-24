@@ -1,5 +1,5 @@
 <?php
-if (file_exists(__DIR__ . 'config.php')) {
+if (file_exists(__DIR__ . '/config.php')) {
     die('安装程序已运行，请删除 config.php 文件后再试。');
 }
 
