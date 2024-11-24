@@ -3,7 +3,7 @@ require '../../config.php';
 require '../../src/database.php';
 require '../../src/auth.php';
 
-$config = require '../../config/config.php';
+$config = require '../../config.php';
 $db = new Database($config);
 $auth = new Auth($db);
 
