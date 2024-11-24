@@ -1,6 +1,6 @@
 <?php
 
-$configFile = __DIR__ . 'config.php';
+$configFile = __DIR__ . '/config.php';
 
 if (file_exists($configFile)) {
     header('Location: ../public/index.php');
