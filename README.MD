@@ -16,9 +16,9 @@ TailDown是一个PHP编写的，多版本分发下载站程序，后台可以发
     <img src="https://mirror.mengze2.cn/proxy/github.com/MengZe2l.png" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">"唯一的"项目分发程序</h3>
+  <h3 align="center">"唯一的"项目版本库程序</h3>
   <p align="center">
-    一个基于PHP的完全开源免费的项目多版本分发站程序！
+    一个基于PHP的完全开源免费的项目版本库程序！
     <br />
     <a href="https://github.com/MengZe2l/taildown/"><strong>探索本项目的文档 »</strong></a>
     <br />
