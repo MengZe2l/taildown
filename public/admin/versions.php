@@ -3,52 +3,34 @@ require '../../config.php';
 require '../../src/database.php';
 require '../../src/auth.php';
 require '../../src/helpers.php';
-
 $config = require '../../config.php';
 $db = new Database($config);
 $auth = new Auth($db);
-
 if (!$auth->isAuthenticated()) {
     header('Location: login.php');
     exit;
 }
-
-// 处理表单提交
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['action']) && $_POST['action'] === 'add') {
         $version = $_POST['version'];
         $changelog = $_POST['changelog'];
-        $file_url = $_POST['file_url']; // 从表单直接获取文件链接
-
-        // 将版本信息和文件链接保存到数据库
+        $file_url = $_POST['file_url'];
         $db->query("INSERT INTO versions (version, changelog, file_url) VALUES (?, ?, ?)", [$version, $changelog, $file_url]);
-
-        // 处理完后跳转回版本管理页面
         header('Location: versions.php');
         exit;
     }
-
     if (isset($_POST['action']) && $_POST['action'] === 'delete') {
         $id = $_POST['id'];
         $db->query("DELETE FROM versions WHERE id = ?", [$id]);
-
-        // 删除后跳转回版本管理页面
         header('Location: versions.php');
         exit;
     }
 }
-
-$versions = $db->query("SELECT * FROM versions ORDER BY created_at DESC")->fetch_all(MYSQLI_ASSOC);
-
-// 处理文件上传
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
     $file = $_FILES['file'];
-    $upload_dir = 'uploads/'; // 上传目录
+    $upload_dir = 'uploads/';
     $target_file = $upload_dir . basename($file['name']);
-    
-    // 检查文件是否上传成功
     if (move_uploaded_file($file['tmp_name'], $target_file)) {
-        // 生成文件的完整 URL
         $file_url = 'https://' . $_SERVER['HTTP_HOST'] . '/public/admin/' . $target_file;
         echo json_encode(['success' => true, 'fileUrl' => $file_url]);
         exit;
@@ -57,6 +39,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
         exit;
     }
 }
+
+/*这是分页获取所有已发布版本*/
+$items_per_page = 10;
+$page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
+$offset = ($page - 1) * $items_per_page;
+$total_items = $db->query("SELECT COUNT(*) AS count FROM versions")->fetch_assoc()['count'];
+$total_pages = ceil($total_items / $items_per_page);
+$versions = $db->query("SELECT * FROM versions ORDER BY created_at DESC LIMIT $offset, $items_per_page")->fetch_all(MYSQLI_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -67,60 +57,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
     <title>后台管理 - 版本管理</title>
     <link href="https://cdn.bootcdn.net/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <style>
+        table td, table th {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        @media (max-width: 768px) {
+            .table-container {
+                overflow-x: auto;
+                -webkit-overflow-scrolling: touch;
+            }
+        }
+    </style>
 </head>
 <body class="bg-gradient-to-r from-indigo-100 via-purple-200 to-indigo-100">
 
     <!-- 汉堡菜单 -->
-      <header class="bg-gray-800 text-white p-4 shadow-md">
-        <div class="container mx-auto flex justify-between items-center">
-            <div class="text-3xl font-semibold">后台管理</div>
-            <!-- 汉堡菜单按钮 -->
-            <div class="lg:hidden flex items-center">
-                <button id="hamburger-icon" class="text-white">
-                    <i class="fas fa-bars"></i>
-                </button>
-            </div>
-            <!-- 侧边导航 -->
-            <div id="nav-links" class="lg:flex hidden space-x-6">
-                <a href="versions.php" class="text-white hover:text-gray-400">版本管理</a>
-                <a href="settings.php" class="text-white hover:text-gray-400">站点设置</a>
-                <a href="announcements.php" class="text-white hover:text-gray-400">公告管理</a>
-            </div>
-        </div>
-        <!-- 汉堡菜单下拉 -->
-        <div id="hamburger-menu" class="lg:hidden absolute left-0 right-0 top-16 bg-gray-800 text-white p-4 hidden">
-            <a href="versions.php" class="block py-2">版本管理</a>
-            <a href="settings.php" class="block py-2">站点设置</a>
-            <a href="announcements.php" class="block py-2">公告管理</a>
-        </div>
-    </header>
+<?php include('header.php'); ?>
 
     <main class="container mx-auto p-6 mt-6 bg-white shadow-lg rounded-lg">
-        <!-- 已发布版本列表 -->
-        <section>
-            <h2 class="text-2xl font-semibold mb-6">已发布版本</h2>
-            <div class="space-y-6">
-                <?php foreach ($versions as $version): ?>
-                    <div class="p-6 bg-gray-50 rounded-lg shadow-md hover:bg-gray-100 transition duration-200">
-                        <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-lg font-semibold text-gray-800"><?php echo htmlspecialchars($version['version']); ?></h3>
-                            <a href="<?php echo htmlspecialchars($version['file_url']); ?>" class="text-indigo-500 hover:text-indigo-600 transition duration-200">
-                                <i class="fas fa-download mr-2"></i> 下载
-                            </a>
-                        </div>
-                        <p class="text-gray-600 mb-4"><?php echo htmlspecialchars($version['changelog']); ?></p>
-                        <form method="POST">
-                            <input type="hidden" name="id" value="<?php echo $version['id']; ?>">
-                            <input type="hidden" name="action" value="delete">
-                            <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 transition duration-200">
-                                删除
-                            </button>
-                        </form>
-                    </div>
-                <?php endforeach; ?>
-            </div>
-        </section>
-
         <!-- 新增版本表单 -->
         <section class="mt-12">
             <h2 class="text-2xl font-semibold mb-6">新增版本</h2>
@@ -165,6 +122,76 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
                 </button>
             </form>
         </section>
+        
+      <!-- 版本列表区域 -->
+        <section class="mt-12">
+            <h2 class="text-2xl font-semibold mb-6">已发布版本</h2>
+            <div class="overflow-x-auto">
+                <table class="min-w-full table-auto bg-gray-50 shadow-md rounded-lg">
+                    <thead class="bg-gray-200">
+                        <tr>
+                            <th class="px-4 py-2 text-left">ID</th>
+                            <th class="px-4 py-2 text-left">版本号</th>
+                            <th class="px-4 py-2 text-left">更新日志</th>
+                            <th class="px-4 py-2 text-left">文件链接</th>
+                            <th class="px-4 py-2 text-center">操作</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($versions as $version): ?>
+                        <tr class="border-b">
+                            <td class="px-4 py-2"><?php echo htmlspecialchars($version['id']); ?></td>
+                            <td class="px-4 py-2"><?php echo htmlspecialchars($version['version']); ?></td>
+                            <td class="px-4 py-2"><?php echo htmlspecialchars($version['changelog']); ?></td>
+                            <td class="px-4 py-2">
+                                <a href="<?php echo htmlspecialchars($version['file_url']); ?>" class="text-indigo-500 hover:text-indigo-600" target="_blank">下载链接</a>
+                            </td>
+                            <td class="px-4 py-2 text-center">
+                                <button type="button" class="bg-yellow-500 text-white px-3 py-1 rounded hover:bg-yellow-600 transition duration-200" onclick="openEditModal(<?php echo htmlspecialchars(json_encode($version)); ?>)">编辑</button>
+                                <form method="POST" class="inline-block">
+                                    <input type="hidden" name="id" value="<?php echo $version['id']; ?>">
+                                    <input type="hidden" name="action" value="delete">
+                                    <button type="submit" class="bg-red-500 text-white px-3 py-1 rounded hover:bg-red-600 transition duration-200">删除</button>
+                                </form>
+                            </td>
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- 分页 -->
+            <div class="mt-6 flex justify-center space-x-2">
+                <?php for ($i = 1; $i <= $total_pages; $i++): ?>
+                <a href="?page=<?php echo $i; ?>" class="px-4 py-2 rounded-lg <?php echo $page == $i ? 'bg-indigo-500 text-white' : 'bg-gray-200 text-gray-700'; ?> hover:bg-indigo-400 hover:text-white transition duration-200">
+                    <?php echo $i; ?>
+                </a>
+                <?php endfor; ?>
+            </div>
+        </section>
+    </main>
+
+    <!-- 编辑模态框 -->
+    <div id="editModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden justify-center items-center z-50">
+        <div class="bg-white p-6 rounded-lg w-96">
+            <h3 class="text-lg font-semibold mb-4">编辑版本信息</h3>
+            <form method="POST" id="editForm">
+                <input type="hidden" name="id" id="editId">
+                <div class="mb-4">
+                    <label for="editVersion" class="block text-sm font-medium text-gray-600">版本号</label>
+                    <input name="version" id="editVersion" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+                </div>
+                <div class="mb-4">
+                    <label for="editChangelog" class="block text-sm font-medium text-gray-600">更新日志</label>
+                    <textarea name="changelog" id="editChangelog" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required></textarea>
+                </div>
+                <div class="flex justify-end">
+                    <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition duration-200" onclick="closeEditModal()">取消</button>
+                    <button type="submit" class="ml-3 bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600 transition duration-200">保存</button>
+                </div>
+            </form>
+        </div>
+    </div>
     </main>
 
     <footer class="text-center text-gray-500 text-sm mt-12 py-4">
@@ -181,30 +208,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
         const successTip = document.createElement('div');
         successTip.classList.add('fixed', 'bottom-4', 'left-1/2', 'transform', '-translate-x-1/2', 'bg-green-500', 'text-white', 'px-6', 'py-3', 'rounded-lg', 'hidden', 'z-50');
         document.body.appendChild(successTip);
-
         uploadButton.addEventListener('click', () => {
             uploadModal.classList.remove('hidden');
         });
-
         cancelBtn.addEventListener('click', () => {
             uploadModal.classList.add('hidden');
         });
-
         confirmBtn.addEventListener('click', () => {
             const file = fileInput.files[0];
             if (file) {
                 const formData = new FormData();
                 formData.append('file', file);
-
-                // 上传文件并获取文件的 URL
-                fetch('', { // 在同一文件内处理上传
+                fetch('', {
                     method: 'POST',
                     body: formData,
                 })
                 .then(response => response.json())
                 .then(data => {
                     if (data.success) {
-                        fileUrlInput.value = data.fileUrl; // 填充文件链接
+                        fileUrlInput.value = data.fileUrl;
                         uploadModal.classList.add('hidden');
                         successTip.textContent = '上传成功！';
                         successTip.classList.remove('hidden');
@@ -219,21 +241,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
         });
         
     </script>
-    <script>
-        const hamburgerIcon = document.getElementById('hamburger-icon');
-        const hamburgerMenu = document.getElementById('hamburger-menu');
-        const navLinks = document.getElementById('nav-links');
-
-        hamburgerIcon.addEventListener('click', () => {
-            hamburgerMenu.classList.toggle('hidden');
-        });
-
-        // 关闭菜单点击链接时
-        document.querySelectorAll('#hamburger-menu a').forEach(link => {
-            link.addEventListener('click', () => {
-                hamburgerMenu.classList.add('hidden');
-            });
-        });
+        <script>
+        function openEditModal(version) {
+            document.getElementById('editId').value = version.id;
+            document.getElementById('editVersion').value = version.version;
+            document.getElementById('editChangelog').value = version.changelog;
+            document.getElementById('editModal').classList.remove('hidden');
+        }
+        function closeEditModal() {
+            document.getElementById('editModal').classList.add('hidden');
+        }
     </script>
 </body>
 </html>
