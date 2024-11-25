@@ -19,24 +19,24 @@ ProjectName and Description
     <img src="https://mirror.mengze2.cn/proxy/github.com/MengZe2l.png" alt="Logo" width="80" height="80">
   </a>
 
-  <h3 align="center">"完美的"README模板</h3>
+  <h3 align="center">"唯一的"项目分发程序</h3>
   <p align="center">
-    一个完全开源免费的程序多版本下载站程序！
+    一个基于PHP的完全开源免费的项目多版本分发站程序！
     <br />
     <a href="https://github.com/MengZe2l/taildown/"><strong>探索本项目的文档 »</strong></a>
     <br />
     <br />
-    <a href="https://github.com/shaojintian/Best_README_template">查看Demo</a>
+    <a href="https://d.usfpack.site">查看Demo</a>
     ·
-    <a href="https://github.com/shaojintian/Best_README_template/issues">报告Bug</a>
+    <a href="https://github.com/MengZe2l/taildown/issues">报告Bug</a>
     ·
-    <a href="https://github.com/shaojintian/Best_README_template/issues">提出新特性</a>
+    <a href="https://github.com/MengZe2l/taildown/issues">提出新特性</a>
   </p>
 
 </p>
 
 
- 本篇README.md面向开发者
+ 本篇README.MD面向网站运维者
 
 ## 目录
 
