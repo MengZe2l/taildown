@@ -123,7 +123,7 @@ qq:2317113278
 ## 贡献者
 <p align="left">
 <a href="https://github.com/MengZe2l">
-  <img src="https://mirror.mengze2.cn/proxy/github.com/MengZe2l.png" alt="Avatar" width="80" height="80"/>
+  <img src="https://mirror.mengze2.cn/proxy/github.com/MengZe2l.png" alt="Avatar" width="40" height="40"/>
 </a>
 </p>
 
