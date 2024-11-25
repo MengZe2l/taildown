@@ -159,12 +159,12 @@ xxx@xxxx
 
 <!-- links -->
 [your-project-path]:MengZe2l/taildown
-[contributors-shield]: https://img.shields.io/github/contributors/shaojintian/Best_README_template.svg?style=flat-square
-[contributors-url]: https://github.com/shaojintian/Best_README_template/graphs/contributors
-[forks-shield]: https://img.shields.io/github/forks/shaojintian/Best_README_template.svg?style=flat-square
-[forks-url]: https://github.com/shaojintian/Best_README_template/network/members
-[stars-shield]: https://img.shields.io/github/stars/shaojintian/Best_README_template.svg?style=flat-square
-[stars-url]: https://github.com/shaojintian/Best_README_template/stargazers
+[contributors-shield]: https://img.shields.io/github/contributor/MengZe2l/taildown.svg?style=flat-square
+[contributors-url]: https://github.com/MengZe2l/taildown/graphs/contributors
+[forks-shield]: https://img.shields.io/github/forks/MengZe2l/taildown.svg?style=flat-square
+[forks-url]: https://github.com/MengZe2l/taildown/network/members
+[stars-shield]: https://img.shields.io/github/stars/MengZe2l/taildown.svg?style=flat-square
+[stars-url]: https://github.com/MengZe2l/taildown/stargazers
 [issues-shield]: https://img.shields.io/github/issues/shaojintian/Best_README_template.svg?style=flat-square
 [issues-url]: https://img.shields.io/github/issues/shaojintian/Best_README_template.svg
 [license-shield]: https://img.shields.io/github/license/shaojintian/Best_README_template.svg?style=flat-square
