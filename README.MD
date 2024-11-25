@@ -86,7 +86,7 @@ PHP_WorkSpace
 │  ├── functions.php
 │  └── helper.php
 ├── install.php
-├── index.php
+└── index.php
 
 ```
 
