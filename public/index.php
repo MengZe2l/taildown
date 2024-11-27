@@ -124,8 +124,10 @@ $settings = getSettings($db) ?? [];
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gradient-to-r text-white from-indigo-400 via-purple-500 to-indigo-600 footbar">
-        <p>&copy; <?php echo date('Y'); ?> <?php echo sanitize($settings['title'] ?? '版本下载站'); ?>. 版权所有.</p>
+    <footer class="bg-white text-gray-800">
+        <div class="container mx-auto py-4 px-4 text-center">
+            <p class="text-sm">&copy; <?php echo date('Y'); ?> <?php echo sanitize($settings['title'] ?? '版本下载站'); ?> | 由 MengZe2l 提供程序支持</p>
+        </div>
     </footer>
 
 </body>
