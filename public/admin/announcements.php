@@ -13,22 +13,13 @@ if (!$auth->isAuthenticated()) {
     exit;
 }
 
-// 获取设置数据
 $settings = $db->query('SELECT * FROM settings LIMIT 1')->fetch_assoc();
-
-// 处理发布公告
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['announcement_content'])) {
     $announcement_content = $_POST['announcement_content'];
-    
-    // 插入公告到数据库
     $db->query("INSERT INTO announcements (content) VALUES (?)", [$announcement_content]);
-    
-    // 重定向到公告页面
     header('Location: announcements.php');
     exit;
 }
-
-// 获取所有公告
 $announcements = $db->query('SELECT * FROM announcements ORDER BY created_at DESC')->fetch_all(MYSQLI_ASSOC);
 ?>
 
@@ -42,10 +33,7 @@ $announcements = $db->query('SELECT * FROM announcements ORDER BY created_at DES
     <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 </head>
 <body class="bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50">
-
-    <!-- 汉堡菜单 -->
     <?php include('header.php'); ?>
-
     <main class="container mx-auto p-8 mt-6 bg-white shadow-lg rounded-lg">
         <section class="space-y-6">
             <h2 class="text-2xl font-semibold text-gray-800">发布公告</h2>
@@ -59,7 +47,6 @@ $announcements = $db->query('SELECT * FROM announcements ORDER BY created_at DES
                 </button>
             </form>
         </section>
-
         <section class="mt-12">
             <h2 class="text-2xl font-semibold text-gray-800 mb-4">公告列表</h2>
             <?php if (count($announcements) > 0): ?>
@@ -81,28 +68,6 @@ $announcements = $db->query('SELECT * FROM announcements ORDER BY created_at DES
             <?php endif; ?>
         </section>
     </main>
-
-    <footer class="text-center text-gray-500 text-sm mt-12 py-4">
-        <p>&copy; <?php echo date('Y'); ?> 版本管理系统</p>
-    </footer>
-
-<!-- JavaScript：控制汉堡菜单的显示与隐藏 -->
-    <script>
-        const hamburgerIcon = document.getElementById('hamburger-icon');
-        const hamburgerMenu = document.getElementById('hamburger-menu');
-        const navLinks = document.getElementById('nav-links');
-
-        hamburgerIcon.addEventListener('click', () => {
-            hamburgerMenu.classList.toggle('hidden');
-        });
-
-        // 关闭菜单点击链接时
-        document.querySelectorAll('#hamburger-menu a').forEach(link => {
-            link.addEventListener('click', () => {
-                hamburgerMenu.classList.add('hidden');
-            });
-        });
-    </script>
-
+<?php include('footer.php'); ?>
 </body>
 </html>

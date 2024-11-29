@@ -2,12 +2,10 @@
 require '../config.php';
 require '../src/database.php';
 require '../src/functions.php';
-require '../src/helpers.php'; // 确保引入了辅助函数
+require '../src/helpers.php';
 
 $config = require '../config.php';
 $db = new Database($config);
-
-// 获取数据
 $versions = getVersions($db) ?? [];
 $announcements = getLatestAnnouncement($db) ?? [];
 $settings = getSettings($db) ?? [];

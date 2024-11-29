@@ -26,7 +26,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>管理员登录</title>
     <link href="https://cdn.bootcdn.net/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
-    <!-- 引入 FontAwesome 图标库 -->
     <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
 </head>
 <body class="bg-gradient-to-r from-indigo-100 via-purple-200 to-indigo-100">
@@ -56,10 +55,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             </button>
         </form>
     </div>
-
-    <footer class="text-center text-gray-500 text-sm mt-12">
-        <p>&copy; <?php echo date('Y'); ?> 管理员登录界面</p>
-    </footer>
+    <?php include('footer.php'); ?>
 
 </body>
 </html>

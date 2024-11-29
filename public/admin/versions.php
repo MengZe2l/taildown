@@ -39,8 +39,6 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
         exit;
     }
 }
-
-/*这是分页获取所有已发布版本*/
 $items_per_page = 10;
 $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($page - 1) * $items_per_page;
@@ -73,12 +71,8 @@ $versions = $db->query("SELECT * FROM versions ORDER BY created_at DESC LIMIT $o
     </style>
 </head>
 <body class="bg-gradient-to-r from-indigo-100 via-purple-200 to-indigo-100">
-
-    <!-- 汉堡菜单 -->
 <?php include('header.php'); ?>
-
     <main class="container mx-auto p-6 mt-6 bg-white shadow-lg rounded-lg">
-        <!-- 新增版本表单 -->
         <section class="mt-12">
             <h2 class="text-2xl font-semibold mb-6">新增版本</h2>
             <form method="POST" class="space-y-6">
@@ -87,20 +81,16 @@ $versions = $db->query("SELECT * FROM versions ORDER BY created_at DESC LIMIT $o
                     <label for="version" class="block text-sm font-medium text-gray-600">版本号</label>
                     <input name="version" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="版本号" required>
                 </div>
-
                 <div class="mb-4">
                     <label for="changelog" class="block text-sm font-medium text-gray-600">更新日志</label>
                     <textarea name="changelog" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="更新日志" required></textarea>
                 </div>
-
                 <div class="mb-4">
                     <label for="file" class="block text-sm font-medium text-gray-600">选择文件</label>
                     <button type="button" id="uploadButton" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-indigo-500 text-white">
                         上传文件
                     </button>
                 </div>
-
-                <!-- 模态框 -->
                 <div id="uploadModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden justify-center items-center z-50">
                     <div class="bg-white p-6 rounded-lg w-96">
                         <h3 class="text-lg font-semibold">选择文件</h3>
@@ -111,19 +101,15 @@ $versions = $db->query("SELECT * FROM versions ORDER BY created_at DESC LIMIT $o
                         </div>
                     </div>
                 </div>
-
                 <div class="mb-4">
                     <label for="file_url" class="block text-sm font-medium text-gray-600">文件链接</label>
                     <input name="file_url" id="file_url" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="文件链接" required readonly>
                 </div>
-
                 <button type="submit" class="w-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white py-3 rounded-lg hover:bg-gradient-to-l focus:ring-2 focus:ring-indigo-500 transition duration-200">
                     新增版本
                 </button>
             </form>
         </section>
-        
-      <!-- 版本列表区域 -->
         <section class="mt-12">
             <h2 class="text-2xl font-semibold mb-6">已发布版本</h2>
             <div class="overflow-x-auto">
@@ -159,8 +145,6 @@ $versions = $db->query("SELECT * FROM versions ORDER BY created_at DESC LIMIT $o
                     </tbody>
                 </table>
             </div>
-
-            <!-- 分页 -->
             <div class="mt-6 flex justify-center space-x-2">
                 <?php for ($i = 1; $i <= $total_pages; $i++): ?>
                 <a href="?page=<?php echo $i; ?>" class="px-4 py-2 rounded-lg <?php echo $page == $i ? 'bg-indigo-500 text-white' : 'bg-gray-200 text-gray-700'; ?> hover:bg-indigo-400 hover:text-white transition duration-200">
@@ -170,8 +154,6 @@ $versions = $db->query("SELECT * FROM versions ORDER BY created_at DESC LIMIT $o
             </div>
         </section>
     </main>
-
-    <!-- 编辑模态框 -->
     <div id="editModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden justify-center items-center z-50">
         <div class="bg-white p-6 rounded-lg w-96">
             <h3 class="text-lg font-semibold mb-4">编辑版本信息</h3>
@@ -193,10 +175,7 @@ $versions = $db->query("SELECT * FROM versions ORDER BY created_at DESC LIMIT $o
         </div>
     </div>
     </main>
-
-    <footer class="text-center text-gray-500 text-sm mt-12 py-4">
-        <p>&copy; <?php echo date('Y'); ?> 版本管理系统</p>
-    </footer>
+<?php include('footer.php'); ?>
 
     <script>
         const uploadButton = document.getElementById('uploadButton');

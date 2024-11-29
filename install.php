@@ -4,31 +4,22 @@ if (file_exists(__DIR__ . '/config.php')) {
 }
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // 获取表单数据
     $db_host = $_POST['db_host'];
     $db_user = $_POST['db_user'];
     $db_pass = $_POST['db_pass'];
     $db_name = $_POST['db_name'];
-
     $admin_user = $_POST['admin_user'];
     $admin_pass = password_hash($_POST['admin_pass'], PASSWORD_DEFAULT);
-
     $site_title = $_POST['site_title'];
     $site_desc = $_POST['site_desc'];
     $site_keywords = $_POST['site_keywords'];
     $site_favicon = $_POST['site_favicon'];
-
-    // 尝试连接数据库
     $conn = new mysqli($db_host, $db_user, $db_pass);
     if ($conn->connect_error) {
         die('数据库连接失败: ' . $conn->connect_error);
     }
-
-    // 创建数据库
     $conn->query("CREATE DATABASE IF NOT EXISTS `$db_name`");
     $conn->select_db($db_name);
-
-    // 创建表
     $queries = [
         "CREATE TABLE IF NOT EXISTS `versions` (
             `id` INT AUTO_INCREMENT PRIMARY KEY,
@@ -55,18 +46,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             `password` VARCHAR(255) NOT NULL
         );"
     ];
-
     foreach ($queries as $query) {
         if (!$conn->query($query)) {
             die('数据库表创建失败: ' . $conn->error);
         }
     }
-
-    // 插入默认数据
     $conn->query("INSERT INTO `settings` (title, description, keywords, favicon) VALUES ('$site_title', '$site_desc', '$site_keywords', '$site_favicon');");
     $conn->query("INSERT INTO `admins` (username, password) VALUES ('$admin_user', '$admin_pass');");
-
-    // 生成 config.php 文件
     $config_content = <<<PHP
 <?php
 return [
@@ -79,7 +65,6 @@ PHP;
     if (!file_put_contents(__DIR__ . 'config.php', $config_content)) {
         die('配置文件写入失败，请检查目录权限。');
     }
-
     echo '安装完成！您现在可以删除 install.php 文件并开始使用。';
     exit;
 }

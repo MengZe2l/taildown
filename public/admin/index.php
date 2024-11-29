@@ -9,9 +9,9 @@ $auth = new Auth($db);
 
 // 检查是否已登录
 if ($auth->isAuthenticated()) {
-    header('Location: dashboard.php'); // 如果已登录，跳转到仪表盘
+    header('Location: dashboard.php');
     exit;
 } else {
-    header('Location: ./login.php'); // 未登录则跳转到登录页面
+    header('Location: ./login.php');
     exit;
 }
