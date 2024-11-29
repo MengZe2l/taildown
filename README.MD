@@ -71,6 +71,9 @@ git clone https://github.com/MengZe2l/taildown.git
 PHP_WorkSpace
 ├── LICENSE
 ├── README.MD
+├── /.github/
+│  └── /ISSUE_TEMPLATE/
+│  │  └── bug.yml
 ├── /public/
 │  ├── /admin/
 │  │  ├── /uploads/
@@ -80,7 +83,8 @@ PHP_WorkSpace
 │  │  ├── index.php
 │  │  ├── login.php
 │  │  ├── settings.php
-│  │  └── versions.php
+│  │  ├── footer.php
+│  │  └── versions.php│
 │  ├── index.php
 ├── /src/
 │  ├── auth.php
