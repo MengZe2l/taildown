@@ -1,0 +1,58 @@
+name: 错误报告
+description: 提交错误报告.
+title: "[Bug]: "
+labels: ["bug", "triage"]
+projects: ["octo-org/1", "octo-org/44"]
+assignees:
+  - octocat
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢您花时间填写此错误报告！
+  - type: input
+    id: contact
+    attributes:
+      label: 联系方式
+      description: 填写你的邮箱
+      placeholder: ex. email@example.com
+    validations:
+      required: false
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: Bug描述
+      description: 你希望该如何修复这个bug?
+      placeholder: Bug详细描述
+      value: "A bug happened!"
+    validations:
+      required: true
+  - type: dropdown
+    id: version
+    attributes:
+      label: 出错的版本
+      description: 你在使用我们哪个版本时出错
+      options:
+        - 1.0.1 (预发布版本)
+        - 1.1.0 (第一个正式版)
+      default: 0
+    validations:
+      required: true
+  - type: dropdown
+    id: browsers
+    attributes:
+      label: 你在哪些浏览器上看到了问题？
+      multiple: true
+      options:
+        - Firefox
+        - Chrome
+        - Safari
+        - Microsoft Edge
+        - 手机自带的
+        - 其他浏览器
+  - type: textarea
+    id: logs
+    attributes:
+      label: 报错日志或者错误详情(如果有的话)
+      description: 请复制并粘贴任何相关日志输出。这将自动格式化为代码。
+      render: shell
