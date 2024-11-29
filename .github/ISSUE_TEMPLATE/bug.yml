@@ -35,6 +35,7 @@ body:
       options:
         - 1.0.1 (预发布版本)
         - 1.1.0 (第一个正式版)
+        - 1.1.1正式版
       default: 0
     validations:
       required: true
