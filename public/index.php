@@ -9,6 +9,19 @@ $db = new Database($config);
 $versions = getVersions($db) ?? [];
 $announcements = getLatestAnnouncement($db) ?? [];
 $settings = getSettings($db) ?? [];
+
+$search = $_GET['search'] ?? '';
+$page = isset($_GET['page']) && is_numeric($_GET['page']) ? intval($_GET['page']) : 1;
+$itemsPerPage = 10;
+$offset = ($page - 1) * $itemsPerPage;
+if ($search) {
+    $versions = searchVersionsPaginated($db, $search, $itemsPerPage, $offset);
+    $totalItems = countSearchResults($db, $search);
+} else {
+    $versions = getVersionsPaginated($db, $itemsPerPage, $offset);
+    $totalItems = countTotalVersions($db);
+}
+$totalPages = ceil($totalItems / $itemsPerPage);
 ?>
 
 <!DOCTYPE html>
@@ -69,12 +82,14 @@ $settings = getSettings($db) ?? [];
       <span class="text-lg font-bold"><?php echo sanitize($settings['title'] ?? '版本下载站'); ?></h1></span>
     </div>
     <div>
-      <i id="tipIcon" class="fas fa-info-circle icon-btn text-blue-600" title="说明"></i>
+      <i id="tipIcon" class="fas fa-info-circle icon-btn text-blue-600" title="简介"></i>
     </div>
   </div>
 
     <!-- Main Content -->
     <main class="py-8 bg-gray-100">
+        
+        
         <div class="container mx-auto px-4 sm:px-6 lg:px-8">
             <!-- Announcements -->
             <section id="announcement" class="bg-white p-6 rounded-lg shadow mb-8 relative">
@@ -89,7 +104,26 @@ $settings = getSettings($db) ?? [];
         <?php echo $announcements ? sanitize($announcements[0]['content']) : '暂无公告'; ?>
     </p>
 </section>
+<section class="p-6 bg-white shadow rounded-lg mb-8">
+    <form action="" method="get" class="flex items-center gap-4 w-full">
+        <!-- 搜索输入框 -->
+        <input 
+            type="text" 
+            name="search" 
+            placeholder="输入关键词进行搜索..." 
+            value="<?php echo htmlspecialchars($_GET['search'] ?? ''); ?>" 
+            class="flex-grow min-w-0 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+        >
 
+        <!-- 搜索按钮 -->
+        <button 
+            type="submit" 
+            class="shrink-0 px-6 py-2 bg-indigo-500 text-white font-semibold rounded-lg shadow hover:bg-indigo-600 transition-all whitespace-nowrap"
+        >
+            搜索
+        </button>
+    </form>
+</section>
             <!-- Versions -->
             <section class="p-2 rounded-lg">
                 <h2 class="text-2xl font-bold text-gray-800 mb-6">版本列表</h2>
@@ -119,6 +153,56 @@ $settings = getSettings($db) ?? [];
                 <?php endif; ?>
             </section>
         </div>
+        
+            <div id="modal" class="relative z-10 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
+        <div class="fixed inset-0 bg-gray-500/75 transition-opacity" aria-hidden="true"></div>
+
+        <div class="fixed inset-0 z-10 w-screen overflow-y-auto">
+            <div class="flex min-h-full items-end justify-center p-4 text-center sm:items-center sm:p-0">
+                <div class="relative transform overflow-hidden rounded-lg bg-white text-left shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-lg">
+                    <div class="bg-white px-4 pb-4 pt-5 sm:p-6 sm:pb-4">
+                        <div class="sm:flex sm:items-start">
+                            <div class="mt-3 text-center sm:ml-4 sm:mt-0 sm:text-left">
+                                <h3 class="text-base font-semibold text-gray-900" id="modal-title">关于本站</h3>
+                                <div class="mt-2">
+                                    <p class="text-sm text-gray-500">
+                                        <?php echo htmlspecialchars($settings['description']); ?>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-50 px-4 py-3 sm:flex sm:flex-row-reverse sm:px-6">
+                        <button type="button" id="cancel-button" class="mt-3 inline-flex w-full justify-center rounded-md bg-white px-3 py-2 text-sm font-semibold text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 hover:bg-gray-50 sm:mt-0 sm:w-auto">
+                            关闭
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <section class="mt-8 flex justify-center space-x-2">
+    <?php if ($page > 1): ?>
+        <a href="?search=<?php echo urlencode($search); ?>&page=<?php echo $page - 1; ?>" 
+           class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">
+            上页
+        </a>
+    <?php endif; ?>
+
+    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+        <a href="?search=<?php echo urlencode($search); ?>&page=<?php echo $i; ?>" 
+           class="px-4 py-2 <?php echo $i == $page ? 'bg-indigo-500 text-white' : 'bg-gray-200 text-gray-700'; ?> rounded hover:bg-gray-300">
+            <?php echo $i; ?>
+        </a>
+    <?php endfor; ?>
+
+    <?php if ($page < $totalPages): ?>
+        <a href="?search=<?php echo urlencode($search); ?>&page=<?php echo $page + 1; ?>" 
+           class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">
+            下页
+        </a>
+    <?php endif; ?>
+</section>
     </main>
 
     <!-- Footer -->
@@ -128,5 +212,23 @@ $settings = getSettings($db) ?? [];
         </div>
     </footer>
 
+ <script>
+        const modal = document.getElementById('modal');
+        const tipIcon = document.getElementById('tipIcon');
+        const cancelButton = document.getElementById('cancel-button');
+        function openModal() {
+            modal.classList.remove('hidden');
+        }
+        function closeModal() {
+            modal.classList.add('hidden');
+        }
+        tipIcon.addEventListener('click', openModal);
+        cancelButton.addEventListener('click', closeModal);
+        modal.addEventListener('click', (event) => {
+            if (event.target === modal) {
+                closeModal();
+            }
+        });
+    </script>
 </body>
 </html>
