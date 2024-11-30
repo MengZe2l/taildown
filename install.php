@@ -62,7 +62,7 @@ return [
     'db_name' => '$db_name',
 ];
 PHP;
-    if (!file_put_contents(__DIR__ . 'config.php', $config_content)) {
+    if (!file_put_contents(__DIR__ . '/config.php', $config_content)) {
         die('配置文件写入失败，请检查目录权限。');
     }
     echo '安装完成！您现在可以删除 install.php 文件并开始使用。';
