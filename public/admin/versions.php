@@ -3,15 +3,21 @@ require '../../config.php';
 require '../../src/database.php';
 require '../../src/auth.php';
 require '../../src/helpers.php';
+
 $config = require '../../config.php';
 $db = new Database($config);
 $auth = new Auth($db);
+
 if (!$auth->isAuthenticated()) {
     header('Location: login.php');
     exit;
 }
+
+// 处理新增、编辑和删除操作
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    if (isset($_POST['action']) && $_POST['action'] === 'add') {
+    $action = $_POST['action'] ?? '';
+    
+    if ($action === 'add') {
         $version = $_POST['version'];
         $changelog = $_POST['changelog'];
         $file_url = $_POST['file_url'];
@@ -19,13 +25,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         header('Location: versions.php');
         exit;
     }
-    if (isset($_POST['action']) && $_POST['action'] === 'delete') {
+
+    if ($action === 'edit') {
+        $id = $_POST['id'];
+        $version = $_POST['version'];
+        $changelog = $_POST['changelog'];
+        $db->query("UPDATE versions SET version = ?, changelog = ? WHERE id = ?", [$version, $changelog, $id]);
+        header('Location: versions.php');
+        exit;
+    }
+
+    if ($action === 'delete') {
         $id = $_POST['id'];
         $db->query("DELETE FROM versions WHERE id = ?", [$id]);
         header('Location: versions.php');
         exit;
     }
 }
+
+// 文件上传处理
 if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
     $file = $_FILES['file'];
     $upload_dir = 'uploads/';
@@ -39,6 +57,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_FILES['file'])) {
         exit;
     }
 }
+
+// 分页与数据获取
 $items_per_page = 10;
 $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
 $offset = ($page - 1) * $items_per_page;
@@ -153,27 +173,29 @@ $versions = $db->query("SELECT * FROM versions ORDER BY created_at DESC LIMIT $o
                 <?php endfor; ?>
             </div>
         </section>
-    </main>
     <div id="editModal" class="fixed inset-0 bg-gray-600 bg-opacity-50 hidden justify-center items-center z-50">
-        <div class="bg-white p-6 rounded-lg w-96">
-            <h3 class="text-lg font-semibold mb-4">编辑版本信息</h3>
-            <form method="POST" id="editForm">
-                <input type="hidden" name="id" id="editId">
-                <div class="mb-4">
-                    <label for="editVersion" class="block text-sm font-medium text-gray-600">版本号</label>
-                    <input name="version" id="editVersion" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
-                </div>
-                <div class="mb-4">
-                    <label for="editChangelog" class="block text-sm font-medium text-gray-600">更新日志</label>
-                    <textarea name="changelog" id="editChangelog" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required></textarea>
-                </div>
-                <div class="flex justify-end">
-                    <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition duration-200" onclick="closeEditModal()">取消</button>
-                    <button type="submit" class="ml-3 bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600 transition duration-200">保存</button>
-                </div>
-            </form>
-        </div>
+    <div class="bg-white p-6 rounded-lg w-96">
+        <h3 class="text-lg font-semibold mb-4">编辑版本信息</h3>
+        <form method="POST" id="editForm">
+            <!-- Action for edit -->
+            <input type="hidden" name="action" value="edit">
+            <!-- ID field -->
+            <input type="hidden" name="id" id="editId">
+            <div class="mb-4">
+                <label for="editVersion" class="block text-sm font-medium text-gray-600">版本号</label>
+                <input name="version" id="editVersion" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required>
+            </div>
+            <div class="mb-4">
+                <label for="editChangelog" class="block text-sm font-medium text-gray-600">更新日志</label>
+                <textarea name="changelog" id="editChangelog" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" required></textarea>
+            </div>
+            <div class="flex justify-end">
+                <button type="button" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 transition duration-200" onclick="closeEditModal()">取消</button>
+                <button type="submit" class="ml-3 bg-indigo-500 text-white px-4 py-2 rounded hover:bg-indigo-600 transition duration-200">保存</button>
+            </div>
+        </form>
     </div>
+</div>
     </main>
 <?php include('footer.php'); ?>
 
@@ -220,16 +242,17 @@ $versions = $db->query("SELECT * FROM versions ORDER BY created_at DESC LIMIT $o
         });
         
     </script>
-        <script>
-        function openEditModal(version) {
-            document.getElementById('editId').value = version.id;
-            document.getElementById('editVersion').value = version.version;
-            document.getElementById('editChangelog').value = version.changelog;
-            document.getElementById('editModal').classList.remove('hidden');
-        }
-        function closeEditModal() {
-            document.getElementById('editModal').classList.add('hidden');
-        }
-    </script>
+<script>
+    function openEditModal(version) {
+        document.getElementById('editId').value = version.id;
+        document.getElementById('editVersion').value = version.version;
+        document.getElementById('editChangelog').value = version.changelog;
+        document.getElementById('editModal').classList.remove('hidden');
+    }
+
+    function closeEditModal() {
+        document.getElementById('editModal').classList.add('hidden');
+    }
+</script>
 </body>
 </html>

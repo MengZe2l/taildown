@@ -44,7 +44,7 @@ $settings = $db->query("SELECT * FROM settings LIMIT 1")->fetch_assoc();
                     <input id="title" name="title" type="text" class="block w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="站点标题" value="<?php echo htmlspecialchars($settings['title']); ?>" required>
                 </div>
                 <div>
-                    <label for="description" class="block text-gray-700 font-medium mb-2">站点描述</label>
+                    <label for="description" class="block text-gray-700 font-medium mb-2">关于站点</label>
                     <textarea id="description" name="description" class="block w-full p-3 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="站点描述" required><?php echo htmlspecialchars($settings['description']); ?></textarea>
                 </div>
                 <div>
