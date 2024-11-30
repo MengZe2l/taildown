@@ -12,7 +12,7 @@ $settings = getSettings($db) ?? [];
 
 $search = $_GET['search'] ?? '';
 $page = isset($_GET['page']) && is_numeric($_GET['page']) ? intval($_GET['page']) : 1;
-$itemsPerPage = 10;
+$itemsPerPage = 6;
 $offset = ($page - 1) * $itemsPerPage;
 if ($search) {
     $versions = searchVersionsPaginated($db, $search, $itemsPerPage, $offset);
@@ -89,45 +89,43 @@ $totalPages = ceil($totalItems / $itemsPerPage);
     <!-- Main Content -->
     <main class="py-8 bg-gray-100">
         
-        
-        <div class="container mx-auto px-4 sm:px-6 lg:px-8">
-            <!-- Announcements -->
-            <section id="announcement" class="bg-white p-6 rounded-lg shadow mb-8 relative">
-    <button 
-        onclick="document.getElementById('announcement').style.display='none'" 
-        class="absolute top-2 right-2 text-gray-500 hover:text-gray-800 focus:outline-none"
-        aria-label="关闭">
-        ✖
-    </button>
-    <h2 class="text-2xl font-bold text-gray-800 mb-4">公告</h2>
-    <p class="text-gray-600">
-        <?php echo $announcements ? sanitize($announcements[0]['content']) : '暂无公告'; ?>
-    </p>
-</section>
-<section class="p-6 bg-white shadow rounded-lg mb-8">
-    <form action="" method="get" class="flex items-center gap-4 w-full">
-        <!-- 搜索输入框 -->
-        <input 
-            type="text" 
-            name="search" 
-            placeholder="输入关键词进行搜索..." 
-            value="<?php echo htmlspecialchars($_GET['search'] ?? ''); ?>" 
-            class="flex-grow min-w-0 px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
-        >
+      <div class="container mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        <!-- 左侧公告栏和搜索栏 -->
+        <aside class="lg:col-span-1 space-y-6">
+            <!-- 公告 -->
+            <section id="announcement" class="bg-white p-6 rounded-lg shadow relative">
+                <h2 class="text-2xl font-bold text-gray-800 mb-4">公告</h2>
+                <p class="text-gray-600">
+                    <?php echo $announcements ? sanitize($announcements[0]['content']) : '暂无公告'; ?>
+                </p>
+            </section>
 
-        <!-- 搜索按钮 -->
-        <button 
-            type="submit" 
-            class="shrink-0 px-6 py-2 bg-indigo-500 text-white font-semibold rounded-lg shadow hover:bg-indigo-600 transition-all whitespace-nowrap"
-        >
-            搜索
-        </button>
-    </form>
-</section>
-            <!-- Versions -->
-            <section class="p-2 rounded-lg">
-                <h2 class="text-2xl font-bold text-gray-800 mb-6">版本列表</h2>
-                <?php if (count($versions) > 0): ?>
+            <!-- 搜索 -->
+            <section class="p-6 bg-white shadow rounded-lg">
+            <h2 class="text-2xl font-bold text-gray-800 mb-6">搜索版本</h2>
+                <form action="" method="get" class="flex flex-col space-y-4">
+                    <input 
+                        type="text" 
+                        name="search" 
+                        placeholder="输入关键词进行搜索..." 
+                        value="<?php echo htmlspecialchars($_GET['search'] ?? ''); ?>" 
+                        class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-500 focus:outline-none"
+                    >
+                    <button 
+                        type="submit" 
+                        class="w-full px-6 py-2 bg-indigo-500 text-white font-semibold rounded-lg shadow hover:bg-indigo-600 transition-all"
+                    >
+                        搜索
+                    </button>
+                </form>
+            </section>
+        </aside>
+
+        <!-- 右侧版本列表 -->
+        <section class="lg:col-span-3 p-2 rounded-lg">
+            
+            <?php if (count($versions) > 0): ?>
                 <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
                     <?php foreach ($versions as $version): ?>
                         <div class="bg-white border border-gray-200 p-6 rounded-lg shadow-sm hover:shadow-md transition-shadow">
@@ -148,11 +146,12 @@ $totalPages = ceil($totalItems / $itemsPerPage);
                         </div>
                     <?php endforeach; ?>
                 </div>
-                <?php else: ?>
+            <?php else: ?>
                 <p class="text-gray-500">当前没有可用的版本。</p>
-                <?php endif; ?>
-            </section>
-        </div>
+            <?php endif; ?>
+        </section>
+    </div>
+</div>
         
             <div id="modal" class="relative z-10 hidden" aria-labelledby="modal-title" role="dialog" aria-modal="true">
         <div class="fixed inset-0 bg-gray-500/75 transition-opacity" aria-hidden="true"></div>
@@ -181,7 +180,8 @@ $totalPages = ceil($totalItems / $itemsPerPage);
             </div>
         </div>
     </div>
-    <section class="mt-8 flex justify-center space-x-2">
+  <section class="mt-8 flex justify-center space-x-2">
+    <!-- 上页按钮 -->
     <?php if ($page > 1): ?>
         <a href="?search=<?php echo urlencode($search); ?>&page=<?php echo $page - 1; ?>" 
            class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">
@@ -189,13 +189,34 @@ $totalPages = ceil($totalItems / $itemsPerPage);
         </a>
     <?php endif; ?>
 
-    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-        <a href="?search=<?php echo urlencode($search); ?>&page=<?php echo $i; ?>" 
-           class="px-4 py-2 <?php echo $i == $page ? 'bg-indigo-500 text-white' : 'bg-gray-200 text-gray-700'; ?> rounded hover:bg-gray-300">
-            <?php echo $i; ?>
+    <!-- 首页 -->
+    <?php if ($page > 1): ?>
+        <a href="?search=<?php echo urlencode($search); ?>&page=1" 
+           class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">
+            1
         </a>
-    <?php endfor; ?>
+        <?php if ($page > 2): ?>
+            <span class="px-4 py-2 text-gray-500">...</span>
+        <?php endif; ?>
+    <?php endif; ?>
 
+    <!-- 当前页 -->
+    <span class="px-4 py-2 bg-indigo-500 text-white rounded">
+        <?php echo $page; ?>
+    </span>
+
+    <!-- 尾页 -->
+    <?php if ($page < $totalPages): ?>
+        <?php if ($page < $totalPages - 1): ?>
+            <span class="px-4 py-2 text-gray-500">...</span>
+        <?php endif; ?>
+        <a href="?search=<?php echo urlencode($search); ?>&page=<?php echo $totalPages; ?>" 
+           class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">
+            <?php echo $totalPages; ?>
+        </a>
+    <?php endif; ?>
+
+    <!-- 下页按钮 -->
     <?php if ($page < $totalPages): ?>
         <a href="?search=<?php echo urlencode($search); ?>&page=<?php echo $page + 1; ?>" 
            class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">
