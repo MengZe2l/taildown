@@ -32,7 +32,6 @@ $settings = $db->query("SELECT * FROM settings LIMIT 1")->fetch_assoc();
     <title>后台管理 - 站点设置</title>
     <link href="https://cdn.bootcdn.net/ajax/libs/tailwindcss/2.2.19/tailwind.min.css" rel="stylesheet">
     <link href="https://cdn.bootcdn.net/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <?php include('style.php'); ?>
 </head>
 <body class="bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50">
     <?php include('header.php'); ?>
