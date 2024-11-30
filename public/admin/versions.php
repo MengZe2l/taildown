@@ -89,6 +89,7 @@ $versions = $db->query("SELECT * FROM versions ORDER BY created_at DESC LIMIT $o
             }
         }
     </style>
+    <?php include('style.php'); ?>
 </head>
 <body class="bg-gradient-to-r from-indigo-100 via-purple-200 to-indigo-100">
 <?php include('header.php'); ?>

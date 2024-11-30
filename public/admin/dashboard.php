@@ -29,7 +29,7 @@ $latestAnnouncement = $db->query('SELECT * FROM announcements ORDER BY created_a
 <body class="bg-gradient-to-r from-blue-50 via-purple-50 to-pink-50">
     <?php include('header.php'); ?>
     <main class="container mx-auto p-8 mt-6 bg-white shadow-lg rounded-lg">
-        <section class="space-y-6">
+        <section class="space-y-6 mt-12">
             <h2 class="text-2xl font-semibold text-gray-800">最新版本</h2>
             <?php if ($latestVersion): ?>
                 <div class="bg-gray-100 p-6 rounded-lg shadow-sm space-y-4">
