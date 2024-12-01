@@ -87,7 +87,7 @@ PHP;
 
     <div class="max-w-xl mx-auto mt-10 bg-white p-8 rounded-lg shadow-lg">
         <h1 class="text-3xl font-semibold text-center text-gray-800 mb-6">安装程序</h1>
-<p class="mb-6">安装向导是梦泽觉得写的最好的代码哦～安装成功之后记得删除<pre>install.php</pre>文件哦</p>
+<p class="mb-6">安装向导是梦泽觉得写的最好的代码哦～<br/>安装成功之后记得删除<code>install.php</code>文件哦</p>
         <form method="POST">
             <!-- 数据库配置 -->
             <section class="mb-6">
