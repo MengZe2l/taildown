@@ -92,26 +92,46 @@ PHP;
             <!-- 数据库配置 -->
             <section class="mb-6">
                 <h2 class="text-xl font-semibold text-gray-700 mb-3">数据库配置</h2>
-                <input name="db_host" class="block w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="数据库地址 (如: localhost)" required>
-                <input name="db_user" class="block w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="数据库用户名" required>
-                <input name="db_pass" class="block w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" type="password" placeholder="数据库密码">
-                <input name="db_name" class="block w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="数据库名称" required>
+                <label>
+                    <input name="db_host" class="block w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="数据库地址 (如: localhost)" required>
+                </label>
+                <label>
+                    <input name="db_user" class="block w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="数据库用户名" required>
+                </label>
+                <label>
+                    <input name="db_pass" class="block w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" type="password" placeholder="数据库密码">
+                </label>
+                <label>
+                    <input name="db_name" class="block w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="数据库名称" required>
+                </label>
             </section>
 
             <!-- 管理员配置 -->
             <section class="mb-6">
                 <h2 class="text-xl font-semibold text-gray-700 mb-3">管理员配置</h2>
-                <input name="admin_user" class="block w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="管理员用户名" required>
-                <input name="admin_pass" class="block w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" type="password" placeholder="管理员密码" required>
+                <label>
+                    <input name="admin_user" class="block w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="管理员用户名" required>
+                </label>
+                <label>
+                    <input name="admin_pass" class="block w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" type="password" placeholder="管理员密码" required>
+                </label>
             </section>
 
             <!-- 站点信息 -->
             <section class="mb-6">
                 <h2 class="text-xl font-semibold text-gray-700 mb-3">站点信息</h2>
-                <input name="site_title" class="block w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="站点标题" required>
-                <input name="site_desc" class="block w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="站点简介" required>
-                <input name="site_keywords" class="block w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="站点关键词" required>
-                <input name="site_favicon" class="block w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Favicon URL (可选)">
+                <label>
+                    <input name="site_title" class="block w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="站点标题" required>
+                </label>
+                <label>
+                    <input name="site_desc" class="block w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="站点简介" required>
+                </label>
+                <label>
+                    <input name="site_keywords" class="block w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="站点关键词" required>
+                </label>
+                <label>
+                    <input name="site_favicon" class="block w-full p-3 mb-4 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500" placeholder="Favicon URL (可选)">
+                </label>
             </section>
 
             <button type="submit" class="w-full bg-blue-500 text-white p-3 rounded-lg shadow-md hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 transition duration-300">开始安装</button>
