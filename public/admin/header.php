@@ -61,4 +61,4 @@ echo <<<HTML
     closeSidebar.addEventListener('click', toggleSidebar);
 </script>
 HTML;
-?>
+
