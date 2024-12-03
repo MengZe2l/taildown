@@ -185,7 +185,7 @@ $totalPages = ceil($totalItems / $itemsPerPage);
     <?php if ($page > 1): ?>
         <a href="?search=<?php echo urlencode($search); ?>&page=<?php echo $page - 1; ?>" 
            class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">
-            上页
+            ⇦
         </a>
     <?php endif; ?>
 
@@ -220,7 +220,7 @@ $totalPages = ceil($totalItems / $itemsPerPage);
     <?php if ($page < $totalPages): ?>
         <a href="?search=<?php echo urlencode($search); ?>&page=<?php echo $page + 1; ?>" 
            class="px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300">
-            下页
+            ⇨
         </a>
     <?php endif; ?>
 </section>
