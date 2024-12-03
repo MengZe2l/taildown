@@ -120,7 +120,7 @@ $versions = $db->query("SELECT * FROM versions ORDER BY created_at DESC LIMIT $o
                 </div>
                 <div class="mb-4">
                     <label for="file_url" class="block text-sm font-medium text-gray-600">文件链接</label>
-                    <input name="file_url" id="file_url" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="文件链接" required readonly>
+                    <input name="file_url" id="file_url" class="w-full p-3 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500" placeholder="文件链接" required>
                 </div>
                 <button type="submit" class="w-full bg-gradient-to-r from-indigo-500 to-purple-500 text-white py-3 rounded-lg hover:bg-gradient-to-l focus:ring-2 focus:ring-indigo-500 transition duration-200">
                     新增版本
